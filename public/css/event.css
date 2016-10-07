@@ -1,0 +1,59 @@
+.bright-text {
+	font-family: "Gotham Medium","Gotham";
+	color: white;
+}
+
+.face-image {
+  width: 100%;
+  min-height: 48px;
+  min-width: 48px;
+  max-height: 200px;
+  max-width: 200px;
+}
+
+.face-title {
+/*  white-space: nowrap;*/
+  width: 100%;
+  text-align: center;
+/*  text-overflow: inherit;*/
+}
+.face-title :hover{
+  text-overflow: inherit;
+  overflow: visible;
+  text-align: center;
+}
+
+.header-image {
+  background-image: url("../img/slide1.png");
+  background-repeat: no-repeat;
+  background-position: left top;
+  width: 100%;
+}
+
+.di-pad {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.description-text {
+	font-style: italic;
+	margin-right: 10px;
+}
+
+.btn-primary {
+	background-color: green;
+}
+
+.page-header {
+	padding-left: 0; 
+	padding-right: 0; 
+	padding-top: 10px; 
+	padding-right: 15px;
+	margin-top: 0;
+	background-repeat: no-repeat;
+	background-size: 100%, cover;
+	background-position: center;
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/dropin-mobile.png);
+}
