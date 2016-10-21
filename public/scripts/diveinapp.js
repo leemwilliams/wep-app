@@ -28,7 +28,7 @@ app.controller('diveinappc', function($scope, $http) {
 		"RC":  // Cancelled by guest, for discoverable events (EA: Guest)
 				{desc: "You already declined.", attending: false, changeEnabled: true,  changeText: "I'm back in", newState: "RJ" },
 		"GJ":  // Guest Joined, for public / discoverable / private event (EA: Guest)
-				{desc: "You already joined", attending: true, changeEnabled: true,  changeText: "I'm out", newState: "GR" },
+				{desc: "You already joined", attending: true, changeEnabled: true,  changeText: "I'm out", newState: "GC" },
 		"GR":  // Rejected by host after joining, for public / discoverable / private event (EA: Host)
 				{desc: "Your request was declined by the host", attending: false, changeEnabled: false,  changeText: "I'm in", newState: "GR" },
 		"GC":  // Cancelled by guest after joining event, for public / discoverable / private (EA: Guest)
@@ -40,7 +40,9 @@ app.controller('diveinappc', function($scope, $http) {
 		"WL":  // Guest on wait list, for public / discoverable / private event (EA: Guest)
 				{desc: "You're on the waitlist", attending: true, changeEnabled: true,  changeText: "I'm out", newState: "GC" },
 		"other":  // other unknown state
-				{desc: "", attending: false, changeEnabled: true,  changeText: "I'm in", newState: "RJ" }
+				{desc: "", attending: false, changeEnabled: true,  changeText: "I'm in", newState: "RJ" },
+		"public":  // public, not joined state
+				{desc: "", attending: false, changeEnabled: true,  changeText: "I'm in", newState: "GJ" }				
 	}
 	
 	// define how to handle loading failures before we actually load.
@@ -66,7 +68,7 @@ app.controller('diveinappc', function($scope, $http) {
 	}
 	
 	// now attempt to load the page contents.
-    $http.get('https://testapi.dive-in.co/api/v1/event/invite/'+eventKey).then(
+    $http.get('https://demo.dive-in.co/api/v1/event/invite/'+eventKey).then(
 		function(response) {
 			if (response.status == 200) {
 				$scope.eventId = response.data.data.eventId;
@@ -80,8 +82,12 @@ app.controller('diveinappc', function($scope, $http) {
 				$scope.event.eventDate = evDate;
 				
 				var state = response.data.data.userEventStatus;
-				if ($scope.states[state]===undefined)
-					state = "other";
+				if (state=="" || $scope.states[state]===undefined) {
+					if (response.data.data.privacyLevel == "Public")
+						state = "public"; // anyone can join
+					else
+						state = "other";  // must request to join
+				}
 				$scope.attending = $scope.states[state].attending;
 				$scope.message = $scope.states[state].desc;
 				$scope.changeDisabled = !$scope.states[state].changeEnabled;
@@ -116,8 +122,12 @@ app.controller('diveinappc', function($scope, $http) {
 	// toggle whether we will attend
 	$scope.attend = function() {
 		var state = $scope.event.userEventStatus;
-		if ($scope.states[state]===undefined)
-			state = "other";
+		if (state=="" || $scope.states[state]===undefined) {
+			if ($scope.event.privacyLevel == "Public")
+				state = "public"; // anyone can join
+			else
+				state = "other";  // must request to join
+		}
 		var newState = $scope.states[state].newState;
 		if (!$scope.states[state].changeEnabled) {
 			$scope.errorMessage = "Can't change the event status."
@@ -126,7 +136,7 @@ app.controller('diveinappc', function($scope, $http) {
 		
 		$scope.message = 'Requesting...';
 		
-		$http.post('https://testapi.dive-in.co/api/v1/event/guest', 
+		$http.post('https://demo.dive-in.co/api/v1/event/guest', 
 				{eventId: $scope.eventId, opr: "Guest", eventUserStatus: newState },
 				{headers:{"X-AUTH-TOKEN": $scope.authToken}}).then(
             function (response) { 
@@ -166,7 +176,7 @@ app.controller('diveinappc', function($scope, $http) {
 		$('#loginModal').modal('show');
 	};
 	$scope.login = function(username,password) {
-		$http.post('https://testapi.dive-in.co/api/v1/user/login', {"login_type":"APP",username: username, password: password}).then(
+		$http.post('https://demo.dive-in.co/api/v1/user/login', {"login_type":"APP",username: username, password: password}).then(
             function (response) { 
 				$scope.authToken = response.data.authToken;
 				$('#loginModal').modal('hide');
@@ -184,11 +194,19 @@ app.controller('diveinappc', function($scope, $http) {
 			});
 	};
 	$scope.register = function(username,password) {
-		$http.post('https://testapi.dive-in.co/api/v1/user/signup', {username: username, password: password}).then(
+		$http.post('https://demo.dive-in.co/api/v1/user/signup', {username: username, password: password}).then(
             function (response) { 
-				$scope.authToken = response.data.authToken;
-				$('#registerModal').modal('hide');
-				$scope.attend();
+				if (response.data.status == 'success') {
+					$scope.authToken = response.data.authToken;
+					$('#registerModal').modal('hide');
+					$scope.attend();
+				}
+				else {
+					var m = response.message;
+					$scope.loginErrorMessage = m;
+					$scope.message = m;
+					$scope.errorMessage = m;
+				}
 			},
             function (failure) { 
 				$scope.handleLoginFailure(failure);
@@ -217,7 +235,7 @@ app.controller('diveinappc', function($scope, $http) {
 						 "first_name": response.first_name
 					};
 					
-					$http.post('https://testapi.dive-in.co/api/v1/user/login', info).then(
+					$http.post('https://demo.dive-in.co/api/v1/user/login', info).then(
 						function (response) { 
 							$scope.authToken = response.data.authToken;
 							$('#loginModal').modal('hide');
