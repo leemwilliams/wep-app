@@ -15,8 +15,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js" integrity="sha384-V6/dyDFv85/V/Ktq3ez5B80/c9ZY7jV9c/319rqwNOz3h9CIPdd2Eve0UQBYMMr/" crossorigin="anonymous"></script>
+	<script src="scripts/URI.min.js"></script>
 	<script src="scripts/diveinapp.js"></script>
-
 </head>
 <body ng-controller="diveinappc">
 <div id="fb-root"></div>
@@ -77,11 +77,15 @@ window.fbAsyncInit = function() {
 				<div id="login-form" class="container-fluid">
 					<form class="form-signin" action="/api/v1/user/signup" method="POST">
 						<h2 class="form-signin-heading">Sign up</h2>
+						<label for="inputFirstName" class="sr-only">First name</label>
+						<input ng-model="inputFirstName" type="email" id="inputFirstName" class="form-control" placeholder="First name" required autofocus>
+						<label for="inputLastName" class="sr-only">Last name</label>
+						<input ng-model="inputLastName" type="email" id="inputLastName" class="form-control" placeholder="Last name" required>
 						<label for="inputEmail" class="sr-only">Email address</label>
-						<input ng-model="inputEmail" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+						<input ng-model="inputEmail" type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
 						<label for="inputPassword" class="sr-only">Password</label>
 						<input ng-model="inputPassword" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-						<button ng-click="register(inputEmail,inputPassword)" type="button" class="btn btn-lg btn-primary btn-block">Register</button>
+						<button ng-click="register(inputFirstName,inputLastName,inputEmail,inputPassword)" type="button" class="btn btn-lg btn-primary btn-block">Register</button>
 						<a class="btn btn-block btn-social btn-facebook" ng-click="registerfb()">
 								<span class="fa fa-facebook"></span> Sign up  with Facebook
 						</a>
@@ -140,15 +144,18 @@ window.fbAsyncInit = function() {
 			When: {{event.eventDate | date:'EEEE, MMMM d h:mm a' }}
 		</div>
 		<div class="col-xs-3 pull-right">
-			<div >
-				<button ng-click="attend()" ng-disabled="changeDisabled" type="button" 
-				  class="pull-right btn btn-primary btn-lg" >{{attending?"I'm out":"I'm in"}}</button>
-			</div>
-			<div class="pull-right">
+
+			<button ng-click="attend()" ng-disabled="changeDisabled" type="button" 
+				class="pull-right btn btn-primary btn-lg" >{{attending?"I'm out":"I'm in"}}</button>
+			<div class="pull-right" style="padding:10px 16px; line-height:24px;">
 				{{message}}
 			</div>
 		</div>
 	</div>
+</div>
+
+<div class="container-fluid" ng-show="isMobile">
+Install our <a ng-href="{{event.deepLinkURL}}">mobile app</a>. 
 </div>
 <div class="container-fluid" >
 	<div class="row">

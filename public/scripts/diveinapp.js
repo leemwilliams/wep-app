@@ -1,18 +1,15 @@
 var app = angular.module('diveinapp', []);
 app.controller('diveinappc', function($scope, $http) {
-	var params = window.location.search;
-	if (params.startsWith("?"))
-		sp = params.substring(1);
-	else
-		sp = params;
-	var searchParams = new URLSearchParams(sp);
-	var eventKey = searchParams.get("eventId");
+
+	eventKey = new URI().search(true).eventId;
 	$scope.eventId = undefined;
 	$scope.attending = false;
 	$scope.changeDisabled = true;
 	$scope.authToken = undefined;
 	$scope.event = {};
 	$scope.event.eventDescription = 'Loading...';
+	$scope.isMobile = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
+	$scope.attendPending = false;
 	
 	$scope.states = {
 		"IS":  // Invitation Sent by host (the person who is conducting event), for public / discoverable / private events (End Action (EA): Host)
@@ -121,6 +118,7 @@ app.controller('diveinappc', function($scope, $http) {
 		});
 	// toggle whether we will attend
 	$scope.attend = function() {
+		$scope.attendPending = false;
 		var state = $scope.event.userEventStatus;
 		if (state=="" || $scope.states[state]===undefined) {
 			if ($scope.event.privacyLevel == "Public")
@@ -148,6 +146,7 @@ app.controller('diveinappc', function($scope, $http) {
 					$scope.attending = $scope.states[newState].attending;
 					$scope.message = response.data.message;
 					$scope.changeDisabled = !$scope.states[newState].changeEnabled;
+					$scope.attendPending = false;
 				}
 				else {
 					$scope.handleLoginFailure(response);
@@ -156,6 +155,7 @@ app.controller('diveinappc', function($scope, $http) {
             function (failure) { 
 				if (failure.status == 401) {
 					$scope.message = '';
+					$scope.attendPending = true;
 					//  need to register
 					$scope.showRegister();
 
@@ -175,12 +175,51 @@ app.controller('diveinappc', function($scope, $http) {
 		$('#registerModal').modal('hide');
 		$('#loginModal').modal('show');
 	};
+	$scope.loadDetails = function(next) {
+		$http.get('https://demo.dive-in.co/api/v1/event/details?eventId='+$scope.event.eventId,
+				{headers:{"X-AUTH-TOKEN": $scope.authToken}}).then(
+            function (response) { 
+				if (response.data.status === 'success') {
+					var newState = response.data.data.userEventStatus;
+					if (newState == "" || newState == undefined) {
+						newState = "other";
+					}
+					$scope.event.userEventStatus = newState;
+					$scope.attending = $scope.states[newState].attending;
+					$scope.message = $scope.states[newState].desc;
+					$scope.changeDisabled = !$scope.states[newState].changeEnabled;
+					
+					if (next) {
+						next();
+					}
+				}
+				else {
+					$scope.handleLoginFailure(response);
+				}
+			},
+            function (failure) { 
+				if (failure.status == 401) {
+					$scope.message = '';
+
+					// need to log in
+					$scope.showLogin();
+				}
+				else {
+					$scope.handleLoginFailure(failure);
+				}
+			});
+	}
 	$scope.login = function(username,password) {
 		$http.post('https://demo.dive-in.co/api/v1/user/login', {"login_type":"APP",username: username, password: password}).then(
             function (response) { 
 				$scope.authToken = response.data.authToken;
 				$('#loginModal').modal('hide');
-				$scope.attend();
+				
+				// reload the user's event details, then re-execute the attend() if necessary
+				$scope.loadDetails(function() {
+					if ($scope.attendPending)
+						$scope.attend();
+				});
 			},
             function (failure) { 
 				if (failure.status == 401) {
@@ -193,16 +232,20 @@ app.controller('diveinappc', function($scope, $http) {
 				}
 			});
 	};
-	$scope.register = function(username,password) {
-		$http.post('https://demo.dive-in.co/api/v1/user/signup', {username: username, password: password}).then(
+	$scope.register = function(firstname,lastname,username,password) {
+		$http.post('https://demo.dive-in.co/api/v1/user/signup', {firstName: firstname, lastName: lastname, username: username, password: password}).then(
             function (response) { 
 				if (response.data.status == 'success') {
 					$scope.authToken = response.data.authToken;
 					$('#registerModal').modal('hide');
-					$scope.attend();
+					
+					// re-execute the attend() if necessary
+					if ($scope.attendPending) {
+						$scope.attend();
+					}
 				}
 				else {
-					var m = response.message;
+					var m = response.data.message;
 					$scope.loginErrorMessage = m;
 					$scope.message = m;
 					$scope.errorMessage = m;
