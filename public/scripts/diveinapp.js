@@ -215,6 +215,11 @@ app.controller('diveinappc', function($scope, $http) {
 				$scope.authToken = response.data.authToken;
 				$('#loginModal').modal('hide');
 				
+				// clear error messages if there were any
+				$scope.loginErrorMessage = "";
+				$scope.message = "";
+				$scope.errorMessage = "";					
+				
 				// reload the user's event details, then re-execute the attend() if necessary
 				$scope.loadDetails(function() {
 					if ($scope.attendPending)
@@ -243,6 +248,11 @@ app.controller('diveinappc', function($scope, $http) {
 					if ($scope.attendPending) {
 						$scope.attend();
 					}
+					
+					// clear error messages if there were any
+					$scope.loginErrorMessage = "";
+					$scope.message = "";
+					$scope.errorMessage = "";					
 				}
 				else {
 					var m = response.data.message;
