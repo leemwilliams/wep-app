@@ -184,7 +184,7 @@ app.controller('diveinappc', function($scope, $http) {
 					if (newState == "" || newState == undefined) {
 						newState = "other";
 					}
-					$scope.event.userEventStatus = newState;
+//					$scope.event.userEventStatus = newState;
 					$scope.attending = $scope.states[newState].attending;
 					$scope.message = $scope.states[newState].desc;
 					$scope.changeDisabled = !$scope.states[newState].changeEnabled;
@@ -233,7 +233,7 @@ app.controller('diveinappc', function($scope, $http) {
 			});
 	};
 	$scope.register = function(firstname,lastname,username,password) {
-		$http.post('https://demo.dive-in.co/api/v1/user/signup', {firstName: firstname, lastName: lastname, username: username, password: password}).then(
+		$http.post('https://demo.dive-in.co/api/v1/user/signup', {firstname: firstname, lastname: lastname, username: username, password: password}).then(
             function (response) { 
 				if (response.data.status == 'success') {
 					$scope.authToken = response.data.authToken;
