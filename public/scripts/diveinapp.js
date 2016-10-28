@@ -71,10 +71,15 @@ app.controller('diveinappc', function($scope, $http) {
 				$scope.eventId = response.data.data.eventId;
 				$scope.event = response.data.data;
 				
-				// fix date formatting from '1999-10-10 12:00:00' to '1999-10-10T12:00:00' if necessary
+				// fix date formatting from '1999-10-10 12:00:00' to '1999-10-10T12:00:00Z' if necessary
 				var evDate = $scope.event.eventDate;
 				if (evDate.includes(' ')) {
 					evDate = evDate.replace(' ','T');
+				}
+				// parse the date as if it's UTC, not local time.  The server sends us UTC dates.  
+				// In the HTML, we format the date for display based on browser local time.
+				if (!evDate.endsWith('Z')) {
+					evDate = evDate+'Z';
 				}
 				$scope.event.eventDate = evDate;
 				
@@ -237,22 +242,46 @@ app.controller('diveinappc', function($scope, $http) {
 				}
 			});
 	};
-	$scope.register = function(firstname,lastname,username,password) {
-		$http.post('https://demo.dive-in.co/api/v1/user/signup', {firstname: firstname, lastname: lastname, username: username, password: password}).then(
+	$scope.register = function(firstname,lastname,username,password) {					
+		// clear error messages if there were any
+		$scope.loginErrorMessage = "";
+		$scope.message = "";
+		$scope.errorMessage = "";
+		
+		$http.post('https://demo.dive-in.co/api/v1/user/signup', {username: username, password: password}).then(
             function (response) { 
 				if (response.data.status == 'success') {
 					$scope.authToken = response.data.authToken;
 					$('#registerModal').modal('hide');
 					
-					// re-execute the attend() if necessary
-					if ($scope.attendPending) {
-						$scope.attend();
-					}
-					
-					// clear error messages if there were any
-					$scope.loginErrorMessage = "";
-					$scope.message = "";
-					$scope.errorMessage = "";					
+					$http.post('https://demo.dive-in.co/api/v1/user/update', 
+						{
+							firstName: firstname, 
+							lastName: lastname, 
+							zip: response.data.data.zip,
+							sex: response.data.data.sex,
+							dob: response.data.data.dob,
+							email: response.data.data.email,
+							aboutMe: response.data.data.aboutMe
+						},
+						{headers:{"X-AUTH-TOKEN": $scope.authToken}}
+					).then(function (response) {
+						if (response.data.status == 'success') {
+							// re-execute the attend() if necessary
+							if ($scope.attendPending) {
+								$scope.attend();
+							}
+						}
+						else {
+							var m = response.data.message;
+							$scope.loginErrorMessage = m;
+							$scope.message = m;
+							$scope.errorMessage = m;
+						}
+					},
+					function (failure) { 
+						$scope.handleLoginFailure(failure);
+					});
 				}
 				else {
 					var m = response.data.message;
