@@ -1,5 +1,5 @@
-var app = angular.module('diveinapp', []);
-app.controller('diveinappc', function($scope, $http) {
+var app = angular.module('diveinapp', ['ui.bootstrap']);
+app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $filter, $http) {
 
 	eventKey = new URI().search(true).eventId;
 	$scope.eventId = undefined;
@@ -11,6 +11,25 @@ app.controller('diveinappc', function($scope, $http) {
 	$scope.isMobile = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 	$scope.attendPending = false;
 	
+	// date picker initialization
+    $scope.dateOptions = {
+        maxDate: new Date(),
+        minDate: new Date(1900,1,1),
+        startingDay: 0,  // US standard
+	    datepickerMode: 'year',
+        yearRows: 6,
+	    initDate: new Date(),
+	    showWeeks: false
+    };
+    $scope.datePicker = {
+        opened: false
+    };
+    $scope.openDatePicker = function() {
+        $scope.datePicker.opened = true;
+    };
+    $scope.inputDOB = undefined;
+  
+    // event state table
 	$scope.states = {
 		"IS":  // Invitation Sent by host (the person who is conducting event), for public / discoverable / private events (End Action (EA): Host)
 				{desc: "You've been invited", attending: false, changeEnabled: true,  changeText: "I'm in", newState: "RJ" },
@@ -242,7 +261,7 @@ app.controller('diveinappc', function($scope, $http) {
 				}
 			});
 	};
-	$scope.register = function(firstname,lastname,username,password) {					
+	$scope.register = function(firstname,lastname,dob,username,password) {					
 		// clear error messages if there were any
 		$scope.loginErrorMessage = "";
 		$scope.message = "";
@@ -260,7 +279,7 @@ app.controller('diveinappc', function($scope, $http) {
 							lastName: lastname, 
 							zip: response.data.data.zip,
 							sex: response.data.data.sex,
-							dob: response.data.data.dob,
+							dob: $filter('date')(dob, 'dd-MM-yyyy'),   // API requires dd-MM-yyyy format
 							email: response.data.data.email,
 							aboutMe: response.data.data.aboutMe
 						},
@@ -352,4 +371,4 @@ app.controller('diveinappc', function($scope, $http) {
 		$scope.message = m;
 		$scope.errorMessage = m;
 	}
-});
+}]);

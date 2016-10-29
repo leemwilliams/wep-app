@@ -12,10 +12,13 @@
 	<link rel="stylesheet" href="css/bootstrap-social.css">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/event.css">
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js" integrity="sha384-V6/dyDFv85/V/Ktq3ez5B80/c9ZY7jV9c/319rqwNOz3h9CIPdd2Eve0UQBYMMr/" crossorigin="anonymous"></script>
+    <script src="scripts/ui-bootstrap-tpls-2.2.0.min.js"></script>
 	<script src="scripts/URI.min.js"></script>
+
 	<script src="scripts/diveinapp.js"></script>
 </head>
 <body ng-controller="diveinappc">
@@ -81,11 +84,21 @@ window.fbAsyncInit = function() {
 						<input ng-model="inputFirstName" type="text" id="inputFirstName" class="form-control" placeholder="First name" required autofocus>
 						<label for="inputLastName" class="sr-only">Last name</label>
 						<input ng-model="inputLastName" type="text" id="inputLastName" class="form-control" placeholder="Last name" required>
+
+						<label for="inputDOB" class="sr-only">Date of birth</label>
+						<div class="input-group">
+							<input type="text" class="form-control" uib-datepicker-popup="longDate" ng-model="inputDOB" is-open="datePicker.opened" 
+								datepicker-options="dateOptions" ng-required="true" close-text="Close" placeholder="Date of birth" ng-focus="openDatePicker()"/>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="openDatePicker()"><i class="glyphicon glyphicon-calendar"></i></button>
+							</span>	
+						</div>		
+						
 						<label for="inputEmail" class="sr-only">Email address</label>
 						<input ng-model="inputEmail" type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
 						<label for="inputPassword" class="sr-only">Password</label>
 						<input ng-model="inputPassword" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-						<button ng-click="register(inputFirstName,inputLastName,inputEmail,inputPassword)" type="button" class="btn btn-lg btn-primary btn-block">Register</button>
+						<button ng-click="register(inputFirstName,inputLastName,inputDOB,inputEmail,inputPassword)" type="button" class="btn btn-lg btn-primary btn-block">Register</button>
 						<a class="btn btn-block btn-social btn-facebook" ng-click="registerfb()">
 								<span class="fa fa-facebook"></span> Sign up  with Facebook
 						</a>
