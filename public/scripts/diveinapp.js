@@ -83,63 +83,6 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		});
 	}
 	
-	// now attempt to load the page contents.
-    $http.get('https://demo.dive-in.co/api/v1/event/invite/'+eventKey).then(
-		function(response) {
-			if (response.status == 200) {
-				$scope.eventId = response.data.data.eventId;
-				$scope.event = response.data.data;
-				
-				// fix date formatting from '1999-10-10 12:00:00' to '1999-10-10T12:00:00Z' if necessary
-				var evDate = $scope.event.eventDate;
-				if (evDate.includes(' ')) {
-					evDate = evDate.replace(' ','T');
-				}
-				// parse the date as if it's UTC, not local time.  The server sends us UTC dates.  
-				// In the HTML, we format the date for display based on browser local time.
-				if (!evDate.endsWith('Z')) {
-					evDate = evDate+'Z';
-				}
-				$scope.event.eventDate = evDate;
-				
-				var state = response.data.data.userEventStatus;
-				if (state=="" || $scope.states[state]===undefined) {
-					if (response.data.data.privacyLevel == "Public")
-						state = "public"; // anyone can join
-					else
-						state = "other";  // must request to join
-				}
-				$scope.attending = $scope.states[state].attending;
-				$scope.message = $scope.states[state].desc;
-				$scope.changeDisabled = !$scope.states[state].changeEnabled;
-				
-				var imageUrl;
-				var thumbnailUrl;
-				if (response.data.data.eventType == 'ORGANIZATION') {
-					imageUrl = response.data.data.venueImageURL;
-					$scope.hostName = response.data.data.orgName;
-					thumbnailUrl = response.data.data.orgLogoUrl;
-				}
-				else {
-					imageUrl = response.data.data.venueImageURL;
-					$scope.hostName = response.data.data.hostName;
-					thumbnailUrl = response.data.data.hostDisplayPic;
-				}
-				$("#pageHeader").css({
-					"background-image": "linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("+imageUrl+")"
-				});
-				if (thumbnailUrl !== '')
-					$("#hostThumbnail").attr("src", thumbnailUrl);
-			}
-			else {
-				$scope.event = {};
-				$scope.handleLoadingFailure(response.data);
-			}
-        },
-		function(failure) {
-			$scope.event = {};
-			$scope.handleLoadingFailure(failure);
-		});
 	// toggle whether we will attend
 	$scope.attend = function() {
 		$scope.attendPending = false;
@@ -199,7 +142,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		$('#registerModal').modal('hide');
 		$('#loginModal').modal('show');
 	};
-	$scope.loadDetails = function(next) {
+	$scope.loadDetails = function(next, tryLogin) {
 		$http.get('https://demo.dive-in.co/api/v1/event/details?eventId='+$scope.event.eventId,
 				{headers:{"X-AUTH-TOKEN": $scope.authToken}}).then(
             function (response) { 
@@ -223,10 +166,12 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 			},
             function (failure) { 
 				if (failure.status == 401) {
-					$scope.message = '';
+					if (tryLogin) {
+						$scope.message = '';
 
-					// need to log in
-					$scope.showLogin();
+						// need to log in
+						$scope.showLogin();
+					}
 				}
 				else {
 					$scope.handleLoginFailure(failure);
@@ -248,7 +193,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 				$scope.loadDetails(function() {
 					if ($scope.attendPending)
 						$scope.attend();
-				});
+				}, true);
 			},
             function (failure) { 
 				if (failure.status == 401) {
@@ -371,4 +316,74 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		$scope.message = m;
 		$scope.errorMessage = m;
 	}
+	
+	// attempt to load the page contents.
+	// execute next if it works
+	$scope.loadEvent = function(eventKey, next) {
+		$http.get('https://demo.dive-in.co/api/v1/event/invite/'+eventKey).then(function(response) {
+			if (response.status == 200) {
+				$scope.eventId = response.data.data.eventId;
+				$scope.event = response.data.data;
+				
+				// fix date formatting from '1999-10-10 12:00:00' to '1999-10-10T12:00:00Z' if necessary
+				var evDate = $scope.event.eventDate;
+				if (evDate.includes(' ')) {
+					evDate = evDate.replace(' ','T');
+				}
+				// parse the date as if it's UTC, not local time.  The server sends us UTC dates.  
+				// In the HTML, we format the date for display based on browser local time.
+				if (!evDate.endsWith('Z')) {
+					evDate = evDate+'Z';
+				}
+				$scope.event.eventDate = evDate;
+				
+				var state = response.data.data.userEventStatus;
+				if (state=="" || $scope.states[state]===undefined) {
+					if (response.data.data.privacyLevel == "Public")
+						state = "public"; // anyone can join
+					else
+						state = "other";  // must request to join
+				}
+				$scope.attending = $scope.states[state].attending;
+				$scope.message = $scope.states[state].desc;
+				$scope.changeDisabled = !$scope.states[state].changeEnabled;
+				
+				var imageUrl;
+				var thumbnailUrl;
+				if (response.data.data.eventType == 'ORGANIZATION') {
+					imageUrl = response.data.data.venueImageURL;
+					$scope.hostName = response.data.data.orgName;
+					thumbnailUrl = response.data.data.orgLogoUrl;
+				}
+				else {
+					imageUrl = response.data.data.venueImageURL;
+					$scope.hostName = response.data.data.hostName;
+					thumbnailUrl = response.data.data.hostDisplayPic;
+				}
+				$("#pageHeader").css({
+					"background-image": "linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("+imageUrl+")"
+				});
+				if (thumbnailUrl !== '')
+					$("#hostThumbnail").attr("src", thumbnailUrl);
+				
+				if (next) {
+					next();
+				}
+			}
+			else {
+				$scope.event = {};
+				$scope.handleLoadingFailure(response.data);
+			}
+		},
+		function(failure) {
+			$scope.event = {};
+			$scope.handleLoadingFailure(failure);
+		});
+	}
+	
+	// try to load the event.  then load the user info (if user is logged in), but don't fail if can't load details because the user isn't logged in.
+	$scope.loadEvent(eventKey, function() { 
+		$scope.loadDetails(undefined, false); 
+		});
+		
 }]);
