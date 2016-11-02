@@ -46,11 +46,10 @@
 }
 
 .page-header {
-	padding-left: 0; 
-	padding-right: 0; 
 	padding-top: 10px; 
-	padding-right: 15px;
 	margin-top: 0;
+	margin-left: 15px;
+	margin-right:15px;
 	background-repeat: no-repeat;
 	background-size: 100%, cover;
 	background-position: center;

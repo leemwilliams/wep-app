@@ -380,10 +380,9 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 			$scope.handleLoadingFailure(failure);
 		});
 	}
-	
 	// try to load the event.  then load the user info (if user is logged in), but don't fail if can't load details because the user isn't logged in.
 	$scope.loadEvent(eventKey, function() { 
-		$scope.loadDetails(undefined, false); 
+//		$scope.loadDetails(undefined, false); 
 		});
 		
 }]);
