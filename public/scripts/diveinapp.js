@@ -4,6 +4,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 	eventKey = new URI().search(true).eventId;
 	$scope.eventId = undefined;
 	$scope.attending = false;
+	$scope.changeText = "Join";
 	$scope.changeDisabled = true;
 	$scope.authToken = undefined;
 	$scope.event = {};
@@ -32,33 +33,33 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
     // event state table
 	$scope.states = {
 		"IS":  // Invitation Sent by host (the person who is conducting event), for public / discoverable / private events (End Action (EA): Host)
-				{desc: "You've been invited", attending: false, changeEnabled: true,  changeText: "I'm in", newState: "RJ" },
+				{desc: "You've been invited", attending: false, changeEnabled: true,  changeText: "Join", newState: "RJ" },
 		"IR":  // Invitation Rejected by guest (the person to whom invitation was sent), for public / discoverable / private events (EA: Guest)
-				{desc: "You've declined", attending: false, changeEnabled: true,  changeText: "I'm back in", newState: "RJ" },
+				{desc: "You've declined", attending: false, changeEnabled: true,  changeText: "Join", newState: "RJ" },
 		"IC":  // Invitation Cancelled by host, for public / discoverable / private events (EA: Host)
-				{desc: "You've been cancelled", attending: false, changeEnabled: false,  changeText: "I'm in", newState: "RJ" },
+				{desc: "You've been cancelled", attending: false, changeEnabled: false,  changeText: "Join", newState: "RJ" },
 		"RJ":  // Request made by guest (the person who requested to join), for discoverable events (EA: Guest)
-				{desc: "You've requested to join", attending: true, changeEnabled: true,  changeText: "I'm out", newState: "RC" },
+				{desc: "You've requested to join", attending: true, changeEnabled: true,  changeText: "Cancel", newState: "RC" },
 		"RR":  // Rejected by host, for discoverable events (EA: Host)
-				{desc: "Your request has been declined", attending: false, changeEnabled: false,  changeText: "I'm in", newState: "RR" },
+				{desc: "Your request has been declined", attending: false, changeEnabled: false,  changeText: "Request to Join", newState: "RR" },
 		"RC":  // Cancelled by guest, for discoverable events (EA: Guest)
-				{desc: "You already declined.", attending: false, changeEnabled: true,  changeText: "I'm back in", newState: "RJ" },
+				{desc: "You already declined.", attending: false, changeEnabled: true,  changeText: "Request to Join", newState: "RJ" },
 		"GJ":  // Guest Joined, for public / discoverable / private event (EA: Guest)
-				{desc: "You already joined", attending: true, changeEnabled: true,  changeText: "I'm out", newState: "GC" },
+				{desc: "You already joined", attending: true, changeEnabled: true,  changeText: "Cancel", newState: "GC" },
 		"GR":  // Rejected by host after joining, for public / discoverable / private event (EA: Host)
-				{desc: "Your request was declined by the host", attending: false, changeEnabled: false,  changeText: "I'm in", newState: "GR" },
+				{desc: "Your request was declined by the host", attending: false, changeEnabled: false,  changeText: "Join", newState: "GR" },
 		"GC":  // Cancelled by guest after joining event, for public / discoverable / private (EA: Guest)
-				{desc: "You declined", changeEnabled: true,  attending: false, changeText: "I'm back in", newState: "GJ" },
+				{desc: "You declined", changeEnabled: true,  attending: false, changeText: "Join", newState: "GJ" },
 		"GA":  // Guest attended the event, for public / discoverable / private event (EA: Host)
-				{desc: "You attended", changeEnabled: false,  attending: false, changeText: "I'm in", newState: "GA" },
+				{desc: "You attended", changeEnabled: false,  attending: false, changeText: "Join", newState: "GA" },
 		"GN":  // Guest did not attend the event, for public / discoverable / private event (EA: Host)
-				{desc: "You did not attend", attending: false, changeEnabled: false,  changeText: "I'm in", newState: "GN" },
+				{desc: "You did not attend", attending: false, changeEnabled: false,  changeText: "Join", newState: "GN" },
 		"WL":  // Guest on wait list, for public / discoverable / private event (EA: Guest)
-				{desc: "You're on the waitlist", attending: true, changeEnabled: true,  changeText: "I'm out", newState: "GC" },
+				{desc: "You're on the waitlist", attending: true, changeEnabled: true,  changeText: "Cancel", newState: "GC" },
 		"other":  // other unknown state
-				{desc: "", attending: false, changeEnabled: true,  changeText: "I'm in", newState: "RJ" },
+				{desc: "", attending: false, changeEnabled: true,  changeText: "Request to Join", newState: "RJ" },
 		"public":  // public, not joined state
-				{desc: "", attending: false, changeEnabled: true,  changeText: "I'm in", newState: "GJ" }				
+				{desc: "", attending: false, changeEnabled: true,  changeText: "Join", newState: "GJ" }				
 	}
 	
 	// define how to handle loading failures before we actually load.
@@ -155,6 +156,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 					$scope.attending = $scope.states[newState].attending;
 					$scope.message = $scope.states[newState].desc;
 					$scope.changeDisabled = !$scope.states[newState].changeEnabled;
+					$scope.changeText = $scope.states[newState].changeText;
 					
 					if (next) {
 						next();

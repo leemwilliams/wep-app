@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="css/bootstrap-social.css">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/event.css">
+	<link rel="icon" href="img/favicon.ico">
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -155,12 +156,12 @@ window.fbAsyncInit = function() {
 		<div class="col-xs-9">
 			Venue: {{event.venueName}}
 			<p>
-			When: {{event.eventDate | date:'EEEE, MMMM d h:mm a' }}
+			When: {{event.eventDate | date:'EEEE, MMMM d, h:mm a' }}
 		</div>
 		<div class="col-xs-3 pull-right">
 
 			<button ng-click="attend()" ng-disabled="changeDisabled" type="button" 
-				class="pull-right btn btn-primary btn-lg" >{{attending?"I'm out":"I'm in"}}</button>
+				class="pull-right btn btn-primary btn-lg" >{{changeText}}</button>
 			<div class="pull-right" style="padding:10px 16px; line-height:24px;">
 				{{message}}
 			</div>
@@ -176,15 +177,15 @@ Install our <a ng-href="{{event.deepLinkURL}}">mobile app</a>.
 		<div class="col-xs-8">
 			<b style="margin-top: 0px">What is DiveIn?</b>
 			<p>
-			DiveIn is a mobile platform that helps you discover and arrange social activities.  
-			Whether it's finding interesting people to go to a concert with or organizing a fulfilling day of 
-			volunteering with your friends, DiveIn helps you have the real-live experiences you're looking
-			for.
+			Finally. An app that actually gets you off your phone. From volunteering to hiking, 
+			DiveIn allows you to plan and participate in all kinds of great activities. 
+			Invite your friends or meet new people who share your interests. 
+			Now live in the Bay Area.
 			<p>
 			Read our 
-			<a href="/terms.html">Terms of service</a>
+			<a href="/terms.html">Terms of Service</a>
 			and our 
-			<a href="/privacy.html">privacy policy</a>.
+			<a href="/privacy.html">Privacy Policy</a>.
 		</div>
 		<div class="col-xs-4  pull-right" style="padding-left: 0px; max-width: 175px;">
 			<img src="img/divein-mobile.png" class="img-responsive"/>
