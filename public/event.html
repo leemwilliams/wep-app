@@ -160,7 +160,7 @@ window.fbAsyncInit = function() {
 		</div>
 		<div class="col-xs-3 pull-right">
 			<button id="changeButton" ng-click="attend()" ng-disabled="changeDisabled" type="button" 
-				class="pull-right btn btn-primary btn-lg">
+				ng-class="{'pull-right btn btn-lg btn-danger':attending, 'pull-right btn btn-lg btn-primary':!attending}">
 				{{changeText}}
 			</button>
 		</div>
@@ -178,10 +178,9 @@ Install our <a ng-href="{{event.deepLinkURL}}">mobile app</a>.
 		<div class="col-xs-8">
 			<b style="margin-top: 0px">What is DiveIn?</b>
 			<p>
-			Finally. An app that actually gets you off your phone. From volunteering to hiking, 
-			DiveIn allows you to plan and participate in all kinds of great activities. 
-			Invite your friends or meet new people who share your interests. 
-			Now live in the Bay Area.
+			Finally. An app that actually gets you off your phone. From volunteering to hiking, DiveIn helps you plan and participate in all kinds 
+			of great activities. Invite your friends or meet new people who share your interests. 
+			Now live in the Bay Area.			
 			<p>
 			Read our 
 			<a href="/terms.html">Terms of Service</a>
