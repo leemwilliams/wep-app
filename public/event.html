@@ -28,7 +28,7 @@
 <script>
 window.fbAsyncInit = function() {
   FB.init({
-    appId      : '1847420518820747',
+    appId      : '232302547110547',
     cookie     : true,  // enable cookies to allow the server to access 
                         // the session
     xfbml      : true,  // parse social plugins on this page
@@ -130,7 +130,7 @@ window.fbAsyncInit = function() {
 	</div>
 	<div class="row">
 		<div class="col-xs-10 col-xs-offset-1">
-			<h1 class="bright-text text-center">{{event.eventName}}</h1>
+			<h1 class="bright-text text-center">{{event.eventName}}&nbsp;</h1>
 		</div>
 	</div>
 </div>
@@ -149,22 +149,23 @@ window.fbAsyncInit = function() {
 					{{hostName}} invited you
 				</p>
 			</div>
-			<p class="description-text">{{event.eventDescription}}</p>
+			<p class="description-text">{{event.eventDescription}}&nbsp;</p>
 	</div>
 
-	<div class="row well di-pad">
+	<div class="row well di-pad" style="position:relative">
 		<div class="col-xs-9">
 			Venue: {{event.venueName}}
 			<p>
 			When: {{event.eventDate | date:'EEEE, MMMM d, h:mm a' }}
 		</div>
 		<div class="col-xs-3 pull-right">
-
-			<button ng-click="attend()" ng-disabled="changeDisabled" type="button" 
-				class="pull-right btn btn-primary btn-lg" >{{changeText}}</button>
-			<div class="pull-right" style="padding:10px 16px; line-height:24px;">
-				{{message}}
-			</div>
+			<button id="changeButton" ng-click="attend()" ng-disabled="changeDisabled" type="button" 
+				class="pull-right btn btn-primary btn-lg">
+				{{changeText}}
+			</button>
+		</div>
+		<div id="messageBar" ng-message="messageIsOpen" class="alert-info" style="position:absolute;z-index:100;right:0%;bottom:0%;padding:2px;" role="alert">
+			{{message}}
 		</div>
 	</div>
 </div>

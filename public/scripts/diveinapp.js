@@ -11,6 +11,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 	$scope.event.eventDescription = 'Loading...';
 	$scope.isMobile = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 	$scope.attendPending = false;
+	$scope.messageIsOpen = false;
 	
 	// date picker initialization
     $scope.dateOptions = {
@@ -84,6 +85,20 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		});
 	}
 	
+	$scope.showMessage = function(msg) {
+		$scope.message = msg;
+		$scope.messageIsOpen = (msg != '');
+		$('#messageBar').show();
+		setTimeout(function () {
+			$scope.hideMessage();
+		}, 2000);
+	}
+	$scope.hideMessage = function() {
+		$scope.message = '';
+		$scope.messageIsOpen = false;
+		$('#messageBar').hide();
+	}
+	
 	// toggle whether we will attend
 	$scope.attend = function() {
 		$scope.attendPending = false;
@@ -96,11 +111,11 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		}
 		var newState = $scope.states[state].newState;
 		if (!$scope.states[state].changeEnabled) {
-			$scope.errorMessage = "Can't change the event status."
+			$scope.showMessage("Can't change the event status.");
 			return;
 		}
 		
-		$scope.message = 'Requesting...';
+		$scope.showMessage('Requesting...');
 		
 		$http.post('https://demo.dive-in.co/api/v1/event/guest', 
 				{eventId: $scope.eventId, opr: "Guest", eventUserStatus: newState },
@@ -112,7 +127,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 						newState = "other";
 					$scope.event.userEventStatus = newState;
 					$scope.attending = $scope.states[newState].attending;
-					$scope.message = response.data.message;
+					$scope.showMessage(response.data.message);
 					$scope.changeDisabled = !$scope.states[newState].changeEnabled;
 					$scope.attendPending = false;
 				}
@@ -122,13 +137,10 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 			},
             function (failure) { 
 				if (failure.status == 401) {
-					$scope.message = '';
+					$scope.hideMessage();
 					$scope.attendPending = true;
-					//  need to register
+					// need to register or login
 					$scope.showRegister();
-
-					// need to log in
-//					$scope.showLogin();
 				}
 				else {
 					$scope.handleLoginFailure(failure);
@@ -154,7 +166,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 					}
 //					$scope.event.userEventStatus = newState;
 					$scope.attending = $scope.states[newState].attending;
-					$scope.message = $scope.states[newState].desc;
+					$scope.showMessage($scope.states[newState].desc);
 					$scope.changeDisabled = !$scope.states[newState].changeEnabled;
 					$scope.changeText = $scope.states[newState].changeText;
 					
@@ -169,7 +181,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
             function (failure) { 
 				if (failure.status == 401) {
 					if (tryLogin) {
-						$scope.message = '';
+						$scope.hideMessage();
 
 						// need to log in
 						$scope.showLogin();
@@ -241,7 +253,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 						else {
 							var m = response.data.message;
 							$scope.loginErrorMessage = m;
-							$scope.message = m;
+							$scope.showMessage(m);
 							$scope.errorMessage = m;
 						}
 					},
@@ -252,7 +264,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 				else {
 					var m = response.data.message;
 					$scope.loginErrorMessage = m;
-					$scope.message = m;
+					$scope.showMessage(m);
 					$scope.errorMessage = m;
 				}
 			},
@@ -315,7 +327,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 			m = 'There was a problem logging in.  '+failure["statusText"];
 		}
 		$scope.loginErrorMessage = m;
-		$scope.message = m;
+		$scope.showMessage(m);
 		$scope.errorMessage = m;
 	}
 	
@@ -347,7 +359,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 						state = "other";  // must request to join
 				}
 				$scope.attending = $scope.states[state].attending;
-				$scope.message = $scope.states[state].desc;
+				$scope.showMessage($scope.states[state].desc);
 				$scope.changeDisabled = !$scope.states[state].changeEnabled;
 				
 				var imageUrl;
@@ -382,9 +394,9 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 			$scope.handleLoadingFailure(failure);
 		});
 	}
+	
 	// try to load the event.  then load the user info (if user is logged in), but don't fail if can't load details because the user isn't logged in.
 	$scope.loadEvent(eventKey, function() { 
 //		$scope.loadDetails(undefined, false); 
 		});
-		
 }]);
