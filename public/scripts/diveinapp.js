@@ -12,6 +12,12 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 	$scope.isMobile = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 	$scope.attendPending = false;
 	$scope.messageIsOpen = false;
+	$scope.errorMessage = '';
+	$scope.errorCode = '';
+	
+	var initDate = new Date();
+	initDate.setYear(initDate.getYear()-18);
+	$scope.initDate = initDate;
 	
 	// date picker initialization
     $scope.dateOptions = {
@@ -20,7 +26,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
         startingDay: 0,  // US standard
 	    datepickerMode: 'year',
         yearRows: 6,
-	    initDate: new Date(),
+	    initDate: initDate,
 	    showWeeks: false
     };
     $scope.datePicker = {
@@ -77,7 +83,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		else {
 			m = failure["statusText"];
 		}
-		$scope.errorMessage = "There was an error while loading this screen.  Please try again shortly.  "+m;
+		$scope.showError("There was an error while loading this screen.  Please try again shortly.  "+m);
 		var imageUrl = '../img/errorbanner.jpg';
 
 		$("#pageHeader").css({
@@ -97,6 +103,17 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		$scope.message = '';
 		$scope.messageIsOpen = false;
 		$('#messageBar').hide();
+	}
+	
+	$scope.showError = function(msg) {
+		$scope.errorMessage = msg;
+		$scope.errorCode = 'error.message';
+	}
+	$scope.hideError = function() {
+		$scope.errorMessage  = '';
+		$scope.errorCode = '';
+		$scope.loginErrorMessage = "";
+		$scope.message = "";
 	}
 	
 	// toggle whether we will attend
@@ -132,7 +149,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 					$scope.attendPending = false;
 				}
 				else {
-					$scope.handleLoginFailure(response);
+					$scope.showMessage(response.data.message);
 				}
 			},
             function (failure) { 
@@ -199,9 +216,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 				$('#loginModal').modal('hide');
 				
 				// clear error messages if there were any
-				$scope.loginErrorMessage = "";
-				$scope.message = "";
-				$scope.errorMessage = "";					
+				$scope.hideError();
 				
 				// reload the user's event details, then re-execute the attend() if necessary
 				$scope.loadDetails(function() {
@@ -222,9 +237,14 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 	};
 	$scope.register = function(firstname,lastname,dob,username,password) {					
 		// clear error messages if there were any
-		$scope.loginErrorMessage = "";
-		$scope.message = "";
-		$scope.errorMessage = "";
+		$scope.hideError();
+		
+		if (dob > $scope.initDate) {
+			$('#registerModal').modal('hide');
+			$scope.registerAge = true;
+			return;
+		}
+		$scope.registerAge = false;			
 		
 		$http.post('https://demo.dive-in.co/api/v1/user/signup', {username: username, password: password}).then(
             function (response) { 
@@ -254,7 +274,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 							var m = response.data.message;
 							$scope.loginErrorMessage = m;
 							$scope.showMessage(m);
-							$scope.errorMessage = m;
+							$scope.showError(m);
 						}
 					},
 					function (failure) { 
@@ -265,7 +285,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 					var m = response.data.message;
 					$scope.loginErrorMessage = m;
 					$scope.showMessage(m);
-					$scope.errorMessage = m;
+					$scope.showError(m);
 				}
 			},
             function (failure) { 
@@ -300,9 +320,15 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 							$scope.authToken = response.data.authToken;
 							$('#loginModal').modal('hide');
 							$('#registerModal').modal('hide');
-							if (willAttend) {
-								$scope.attend();
-							}
+							
+							// clear error messages if there were any
+							$scope.hideError();
+							
+							// reload the user's event details, then re-execute the attend() if necessary
+							$scope.loadDetails(function() {
+								if ($scope.attendPending)
+									$scope.attend();
+							}, true);
 						},
 						function (failure) { 
 							$scope.handleLoginFailure(failure);
@@ -328,7 +354,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		}
 		$scope.loginErrorMessage = m;
 		$scope.showMessage(m);
-		$scope.errorMessage = m;
+		$scope.showError(m);
 	}
 	
 	// attempt to load the page contents.

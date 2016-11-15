@@ -89,12 +89,13 @@ window.fbAsyncInit = function() {
 						<label for="inputDOB" class="sr-only">Date of birth</label>
 						<div class="input-group">
 							<input type="text" class="form-control" uib-datepicker-popup="longDate" ng-model="inputDOB" is-open="datePicker.opened" 
-								datepicker-options="dateOptions" ng-required="true" close-text="Close" placeholder="Date of birth" ng-focus="openDatePicker()"/>
+								datepicker-options="dateOptions" ng-required="true" close-text="Close" placeholder="Date of birth" ng-focus="openDatePicker()"
+								ng-max="initDate"/>
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="openDatePicker()"><i class="glyphicon glyphicon-calendar"></i></button>
 							</span>	
 						</div>		
-						
+
 						<label for="inputEmail" class="sr-only">Email address</label>
 						<input ng-model="inputEmail" type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
 						<label for="inputPassword" class="sr-only">Password</label>
@@ -135,10 +136,20 @@ window.fbAsyncInit = function() {
 	</div>
 </div>
 
-<div class="container-fluid" ng-show="event.eventId==undefined">
-	<div class="well">
-		<h3>{{errorMessage}}</h3>
+<!--<div class="container-fluid" ng-show="errorMessage != ''">
+	<div class="well" ng-bind="errorMessage">
 	</div>
+</div>
+-->
+<div class="container-fluid" ng-show="registerAge">
+	<div class="well">
+		We're sorry, but you must be at least 18 years old to use DiveIn. For questions and concerns please visit <a href='http://www.dive-in.co'>www.dive-in.co</a> or contact us at <a href='mailto:support@dive-in.co'>support@dive-in.co</a>
+	</div>	
+</div>
+<div class="container-fluid" ng-show="errorMessage">
+	<div class="well">
+		{{errorMessage}}
+	</div>	
 </div>
 
 <div class="container-fluid"  ng-show="event.eventId!=undefined" >
