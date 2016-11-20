@@ -1,12 +1,12 @@
-var app = angular.module('diveinapp', ['ui.bootstrap']);
-app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $filter, $http) {
+var app = angular.module('diveinapp', ['ui.bootstrap', 'ngCookies']);
+app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function($scope, $filter, $http, $cookies) {
 
 	eventKey = new URI().search(true).eventId;
 	$scope.eventId = undefined;
 	$scope.attending = false;
 	$scope.changeText = "Join";
 	$scope.changeDisabled = true;
-	$scope.authToken = undefined;
+	$scope.authToken = $cookies.get("authToken");
 	$scope.event = {};
 	$scope.event.eventDescription = 'Loading...';
 	$scope.isMobile = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
@@ -181,7 +181,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 					if (newState == "" || newState == undefined) {
 						newState = "other";
 					}
-//					$scope.event.userEventStatus = newState;
+					$scope.event.userEventStatus = newState;
 					$scope.attending = $scope.states[newState].attending;
 					$scope.showMessage($scope.states[newState].desc);
 					$scope.changeDisabled = !$scope.states[newState].changeEnabled;
@@ -213,6 +213,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 		$http.post('https://demo.dive-in.co/api/v1/user/login', {"login_type":"APP",username: username, password: password}).then(
             function (response) { 
 				$scope.authToken = response.data.authToken;
+				$cookies.put("authToken",response.data.authToken);
 				$('#loginModal').modal('hide');
 				
 				// clear error messages if there were any
@@ -318,6 +319,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 					$http.post('https://demo.dive-in.co/api/v1/user/login', info).then(
 						function (response) { 
 							$scope.authToken = response.data.authToken;
+							$cookies.put("authToken",response.data.authToken);
 							$('#loginModal').modal('hide');
 							$('#registerModal').modal('hide');
 							
@@ -423,6 +425,8 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", function($scope, $fi
 	
 	// try to load the event.  then load the user info (if user is logged in), but don't fail if can't load details because the user isn't logged in.
 	$scope.loadEvent(eventKey, function() { 
-//		$scope.loadDetails(undefined, false); 
-		});
+		if ($scope.authToken) {
+  		    $scope.loadDetails($scope.eventId, false);
+		}
+	});
 }]);
