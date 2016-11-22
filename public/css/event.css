@@ -15,7 +15,7 @@
 /*  white-space: nowrap;*/
   width: 100%;
   text-align: center;
-/*  text-overflow: inherit;*/
+  word-wrap: break-word;
 }
 .face-title :hover{
   text-overflow: inherit;
@@ -37,9 +37,11 @@
 }
 
 .description-text {
-	font-style: italic;
-	margin-right: 10px;
+  font-style: italic;
+  margin-right: 10px;
+  word-wrap: break-word;
 }
+
 
 .btn-primary {
 	background-color: green;

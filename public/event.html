@@ -154,14 +154,16 @@ window.fbAsyncInit = function() {
 </div>
 
 <div class="container-fluid"  ng-show="event.eventId!=undefined" >
-	<div class="row di-pad">
-			<div class="pull-left" style="max-width:33%; margin-left: 15px; margin-right: 15px;">
+	<div class="row di-pad" style="margin-left: 0px;">
+			<div class="pull-left" style="max-width:210px;padding-right:10px;">
 				<img id="hostThumbnail" src="img/head.png" class="face-image" style="float:top;"/>
 				<p class="face-title text-center">
-					{{hostName}} invited you
+				{{hostName}} invited you
 				</p>
 			</div>
-			<p class="description-text">{{event.eventDescription}}&nbsp;</p>
+			<div class="pull-left" style="max-width:66%;">
+				<p class="description-text">{{event.eventDescription}}&nbsp;</p>
+			</div>
 	</div>
 
 	<div class="row well di-pad" style="position:relative">
