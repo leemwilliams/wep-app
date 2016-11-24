@@ -87,7 +87,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 		var imageUrl = '../img/errorbanner.jpg';
 
 		$("#pageHeader").css({
-			"background-image": "linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("+imageUrl+")"
+			"background-image": "linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(\""+imageUrl+"\")"
 		});
 	}
 	
@@ -140,12 +140,17 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
             function (response) { 
 				if (response.data.status === 'success') {
 					var newState = response.data.data.guestEventStatus;
-					if ($scope.states[state]===undefined)
-						newState = "other";
+					if ($scope.states[state]===undefined) {
+						if ($scope.event.privacyLevel == "Public")
+							state = "public"; // anyone can join
+						else
+							newState = "other";
+					}
 					$scope.event.userEventStatus = newState;
 					$scope.attending = $scope.states[newState].attending;
 					$scope.showMessage(response.data.message);
 					$scope.changeDisabled = !$scope.states[newState].changeEnabled;
+					$scope.changeText = $scope.states[newState].changeText;
 					$scope.attendPending = false;
 				}
 				else {
@@ -403,7 +408,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 					thumbnailUrl = response.data.data.hostDisplayPic;
 				}
 				$("#pageHeader").css({
-					"background-image": "linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("+imageUrl+")"
+					"background-image": "linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(\""+imageUrl+"\")"
 				});
 				if (thumbnailUrl !== '')
 					$("#hostThumbnail").attr("src", thumbnailUrl);
