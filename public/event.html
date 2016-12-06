@@ -155,26 +155,35 @@ window.fbAsyncInit = function() {
 
 <div class="container-fluid"  ng-show="event.eventId!=undefined" >
 	<div class="row di-pad" style="margin-left: 0px;">
-			<div class="pull-left" style="max-width:210px;padding-right:10px;">
-				<img id="hostThumbnail" src="img/head.png" class="face-image" style="float:top;"/>
-				<p class="face-title text-center">
-				{{hostName}} invited you
-				</p>
-			</div>
-			<div class="pull-left" style="max-width:66%;">
-				<p class="description-text">{{event.eventDescription}}&nbsp;</p>
-			</div>
+		<div class="pull-left">
+			<img id="hostThumbnail" src="img/head.png" class="face-image" style="float:top;"/>
+			<span class="face-title">
+			by {{hostName}}
+			</span>
+		</div>
+	</div>
+	<div class="row di-pad" style="margin-left: 0px;">
+		<div class="pull-left">
+			<p class="description-text">{{event.eventDescription}}&nbsp;</p>
+		</div>
 	</div>
 
 	<div class="row well di-pad" style="position:relative">
-		<div class="col-xs-9">
-			Venue: {{event.venueName}}
-			<p>
-			When: {{event.eventDate | date:'EEEE, MMMM d, h:mm a' }}
+		<div class="col-xs-12">
+			<p class="text-uppercase">Date and Time</p>
+			<p>{{event.eventDate | date:'EEEE, MMMM d, h:mm a' }}&mdash;{{event.eventToDate | date:'EEEE, MMMM d, h:mm a' }}</p>
+			<p class="text-uppercase">Location</p>
+			{{event.venueName}} 
+			<br>
+			{{event.address}}
+			<br>
+<!--			
+			<a ng-href="https://www.google.com/maps/preview?q={{event.venueLatitude}},{{event.venueLongitude}}&z=14&t=m&output=embed" target="_blank">Map</a>
+-->			
 		</div>
-		<div class="col-xs-3 pull-right">
+		<div class="col-xs-12 text-center">
 			<button id="changeButton" ng-click="attend()" ng-disabled="changeDisabled" type="button" 
-				ng-class="{'pull-right btn btn-lg btn-danger':attending, 'pull-right btn btn-lg btn-primary':!attending}">
+				ng-class="{'btn btn-lg btn-danger':attending, 'btn btn-lg btn-primary':!attending}">
 				{{changeText}}
 			</button>
 		</div>
@@ -188,8 +197,11 @@ window.fbAsyncInit = function() {
 Install our <a ng-href="{{event.deepLinkURL}}">mobile app</a>. 
 </div>
 <div class="container-fluid" >
-	<div class="row">
-		<div class="col-xs-8">
+	<div class="row di-pad">
+		<div class="col-xs-12">
+			<div class="pull-right" style="position: inline; padding-left: 0px; max-width: 175px;">
+				<img src="img/divein-mobile.png" class="img-responsive"/>
+			</div>
 			<b style="margin-top: 0px">What is DiveIn?</b>
 			<p>
 			Finally. An app that actually gets you off your phone. From volunteering to hiking, DiveIn helps you plan and participate in all kinds 
@@ -200,9 +212,6 @@ Install our <a ng-href="{{event.deepLinkURL}}">mobile app</a>.
 			<a href="/terms.html">Terms of Service</a>
 			and our 
 			<a href="/privacy.html">Privacy Policy</a>.
-		</div>
-		<div class="col-xs-4  pull-right" style="padding-left: 0px; max-width: 175px;">
-			<img src="img/divein-mobile.png" class="img-responsive"/>
 		</div>
 	</div>
 </div>

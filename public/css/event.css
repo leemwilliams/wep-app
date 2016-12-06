@@ -7,8 +7,8 @@
   width: 100%;
   min-height: 48px;
   min-width: 48px;
-  max-height: 200px;
-  max-width: 200px;
+  max-height: 48px;
+  max-width: 48px;
 }
 
 .face-title {
@@ -30,14 +30,19 @@
   width: 100%;
 }
 
+.di-pad.row {
+  padding-bottom: 15px;
+  padding-top: 12px;
+}
+
 .di-pad {
-  padding-bottom: 20px;
+  padding-bottom: 5px;
   padding-left: 0px;
   padding-right: 0px;
 }
 
 .description-text {
-  font-style: italic;
+//  font-style: italic;
   margin-right: 10px;
   word-wrap: break-word;
 }

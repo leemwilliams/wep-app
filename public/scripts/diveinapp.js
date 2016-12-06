@@ -364,6 +364,19 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 		$scope.showError(m);
 	}
 	
+	$scope.fixDate = function(evDate) {
+		// fix date formatting from '1999-10-10 12:00:00' to '1999-10-10T12:00:00Z' if necessary
+		if (evDate.includes(' ')) {
+			evDate = evDate.replace(' ','T');
+		}
+		// parse the date as if it's UTC, not local time.  The server sends us UTC dates.  
+		// In the HTML, we format the date for display based on browser local time.
+		if (!evDate.endsWith('Z')) {
+			evDate = evDate+'Z';
+		}
+		return evDate;
+	}
+	
 	// attempt to load the page contents.
 	// execute next if it works
 	$scope.loadEvent = function(eventKey, next) {
@@ -373,16 +386,8 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 				$scope.event = response.data.data;
 				
 				// fix date formatting from '1999-10-10 12:00:00' to '1999-10-10T12:00:00Z' if necessary
-				var evDate = $scope.event.eventDate;
-				if (evDate.includes(' ')) {
-					evDate = evDate.replace(' ','T');
-				}
-				// parse the date as if it's UTC, not local time.  The server sends us UTC dates.  
-				// In the HTML, we format the date for display based on browser local time.
-				if (!evDate.endsWith('Z')) {
-					evDate = evDate+'Z';
-				}
-				$scope.event.eventDate = evDate;
+				$scope.event.eventDate = $scope.fixDate($scope.event.eventDate);
+				$scope.event.eventToDate = $scope.fixDate($scope.event.eventToDate);
 				
 				var state = response.data.data.userEventStatus;
 				if (state=="" || $scope.states[state]===undefined) {
