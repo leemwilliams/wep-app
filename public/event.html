@@ -181,9 +181,9 @@ window.fbAsyncInit = function() {
 			<a ng-href="https://www.google.com/maps/preview?q={{event.venueLatitude}},{{event.venueLongitude}}&z=14&t=m&output=embed" target="_blank">Map</a>
 -->			
 		</div>
-		<div class="col-xs-12 text-center">
+		<div class="col-xs-12 text-center" style="margin-top:10px;margin-bottom:5px;">
 			<button id="changeButton" ng-click="attend()" ng-disabled="changeDisabled" type="button" 
-				ng-class="{'btn btn-lg btn-danger':attending, 'btn btn-lg btn-primary':!attending}">
+				ng-class="{'change-button btn btn-lg btn-danger':attending, 'change-button btn btn-lg btn-primary':!attending}">
 				{{changeText}}
 			</button>
 		</div>
