@@ -144,7 +144,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 						if ($scope.event.privacyLevel == "Public")
 							state = "public"; // anyone can join
 						else
-							newState = "other";
+							state = "other";
 					}
 					$scope.event.userEventStatus = newState;
 					$scope.attending = $scope.states[newState].attending;
@@ -184,7 +184,10 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 				if (response.data.status === 'success') {
 					var newState = response.data.data.userEventStatus;
 					if (newState == "" || newState == undefined) {
-						newState = "other";
+						if ($scope.event.privacyLevel == "Public")
+							newState = "public"; // anyone can join
+						else
+							newState = "other";
 					}
 					$scope.event.userEventStatus = newState;
 					$scope.attending = $scope.states[newState].attending;
