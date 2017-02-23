@@ -1,5 +1,25 @@
+@font-face {
+  font-family: 'Proxima Nova Bold';
+  src: url('../fonts/Proxima Nova Bold 13-29-35-888.otf');
+}
+@font-face {
+  font-family: 'Proxima Nova Light';
+  src: url('../fonts/Proxima Nova Light 13-29-35-363.otf');
+}
+@font-face {
+  font-family: 'Proxima Nova Regular';
+  src: url('../fonts/Proxima Nova Reg 13-29-36-307.otf');
+}
+@font-face {
+  font-family: 'Proxima Nova Semibold';
+  src: url('../fonts/Proxima Nova Sbold 13-29-35-527.otf');
+}
+@font-face {
+  font-family: 'Proxima Nova ExtraBold';
+  src: url('../fonts/Proxima Nova Xbold 13-29-35-703.otf');
+}
 .bright-text {
-	font-family: "Gotham Medium","Gotham";
+	font-family: "Proxima Nova Regular";
 	color: white;
 }
 
