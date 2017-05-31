@@ -1,25 +1,5 @@
-@font-face {
-  font-family: 'Proxima Nova Bold';
-  src: url('../fonts/Proxima Nova Bold 13-29-35-888.otf');
-}
-@font-face {
-  font-family: 'Proxima Nova Light';
-  src: url('../fonts/Proxima Nova Light 13-29-35-363.otf');
-}
-@font-face {
-  font-family: 'Proxima Nova Regular';
-  src: url('../fonts/Proxima Nova Reg 13-29-36-307.otf');
-}
-@font-face {
-  font-family: 'Proxima Nova Semibold';
-  src: url('../fonts/Proxima Nova Sbold 13-29-35-527.otf');
-}
-@font-face {
-  font-family: 'Proxima Nova ExtraBold';
-  src: url('../fonts/Proxima Nova Xbold 13-29-35-703.otf');
-}
 .bright-text {
-	font-family: "Proxima Nova Regular";
+	font-family: "Gotham Medium",Gotham, 'Helvetica Neue', Helvetica, Arial, 'sans-serif';
 	color: white;
 }
 
@@ -31,77 +11,58 @@
   max-width: 48px;
 }
 
-.summary-title {
-  font-size: 14pt;
-  font-weight: bold;
+.face-title {
+/*  white-space: nowrap;*/
+  width: 100%;
+  text-align: center;
+  word-wrap: break-word;
 }
-.summary-host {
-  color: gray;
+.face-title :hover{
+  text-overflow: inherit;
+  overflow: visible;
+  text-align: center;
 }
-.summary-date {
-  text-transform: uppercase;  
-  color: gray;
-}
-.section-title {
-  text-transform: uppercase;  
-  font-weight: bold;
-}
+
 .header-image {
-  background-image: url("../img/slide1.png");
+  background-image: url("../img/hands-in-the-air.jpg");
   background-repeat: no-repeat;
   background-position: left top;
   width: 100%;
 }
 
 .di-pad.row {
+  padding-bottom: 15px;
+  padding-top: 12px;
 }
 
 .di-pad {
-}
-
-@media (max-width: 767px) {
-	.di-pad-xs-l{
-	  padding-left: 45px;
-	}
-	.di-pad-xs-r{
-	  padding-left: 45px;
-	}
-	.di-hidden-xs{
-	  visibility: hidden;
-	  display: none;
-	}
-}
-@media (min-width: 768px) {
-	.di-pad-sm-l{
-	  padding-left: 45px;
-	}
-	.di-pad-sm-r{
-	  padding-left: 10px;
-	}
-	.di-hidden-sm{
-	  visibility: hidden;
-	  display: none;
-	}
+  padding-bottom: 5px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .description-text {
-  margin-right: 10px;
+//  font-style: italic;
+  margin-right: 15px;
   word-wrap: break-word;
 }
 
 
 .btn-primary {
-	background-color: green;
+	background-color: darkgray;
 }
 
-.di-banner {
+.page-header {
+	padding-top: 10px; 
+	margin-top: 0;
+	margin-left: 15px;
+	margin-right: 15px;
 	background-repeat: no-repeat;
 	background-size: 100%, cover;
 	background-position: center;
-	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/divein-mobile.png);
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/hands-in-the-air.jpg);
 }
 
 .change-button {
-    width: 100%;
-	background-color: #00AF3F;
+    min-width: 50%;
 }
