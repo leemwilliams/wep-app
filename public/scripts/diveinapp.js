@@ -83,7 +83,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 		else {
 			m = failure["statusText"];
 		}
-		$scope.showError("There was an error while loading this screen.  Please try again shortly.  "+m);
+		$scope.showError("There was an error while loading this screen.  Please try again.  "+m);
 		var imageUrl = '../img/errorbanner.jpg';
 
 		$("#pageHeader").css({
@@ -134,7 +134,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 		
 		$scope.showMessage('Requesting...');
 		
-		$http.post('/api/v1/event/guest', 
+		$http.post('https://sudoprod.dive-in.co/api/v1/event/guest', 
 				{eventId: $scope.eventId, opr: "Guest", eventUserStatus: newState },
 				{headers:{"X-AUTH-TOKEN": $scope.authToken}}).then(
             function (response) { 
@@ -144,7 +144,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 						if ($scope.event.privacyLevel == "Public")
 							state = "public"; // anyone can join
 						else
-							state = "other";
+							newState = "other";
 					}
 					$scope.event.userEventStatus = newState;
 					$scope.attending = $scope.states[newState].attending;
@@ -178,7 +178,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 		$('#loginModal').modal('show');
 	};
 	$scope.loadDetails = function(next, tryLogin) {
-		$http.get('/api/v1/event/details?eventId='+$scope.event.eventId,
+		$http.get('https://sudoprod.dive-in.co/api/v1/event/details?eventId='+$scope.event.eventId,
 				{headers:{"X-AUTH-TOKEN": $scope.authToken}}).then(
             function (response) { 
 				if (response.data.status === 'success') {
@@ -187,6 +187,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 						if ($scope.event.privacyLevel == "Public")
 							newState = "public"; // anyone can join
 						else
+
 							newState = "other";
 					}
 					$scope.event.userEventStatus = newState;
@@ -218,7 +219,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 			});
 	}
 	$scope.login = function(username,password) {
-		$http.post('/api/v1/user/login', {"login_type":"APP",username: username, password: password}).then(
+		$http.post('https://sudoprod.dive-in.co/api/v1/user/login', {"login_type":"APP",username: username, password: password}).then(
             function (response) { 
 				$scope.authToken = response.data.authToken;
 				$cookies.put("authToken",response.data.authToken);
@@ -255,13 +256,13 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 		}
 		$scope.registerAge = false;			
 		
-		$http.post('/api/v1/user/signup', {username: username, password: password}).then(
+		$http.post('https://sudoprod.dive-in.co/api/v1/user/signup', {username: username, password: password}).then(
             function (response) { 
 				if (response.data.status == 'success') {
 					$scope.authToken = response.data.authToken;
 					$('#registerModal').modal('hide');
 					
-					$http.post('/api/v1/user/update', 
+					$http.post('https://sudoprod.dive-in.co/api/v1/user/update', 
 						{
 							firstName: firstname, 
 							lastName: lastname, 
@@ -324,7 +325,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 						 "first_name": response.first_name
 					};
 					
-					$http.post('/api/v1/user/login', info).then(
+					$http.post('https://sudoprod.dive-in.co/api/v1/user/login', info).then(
 						function (response) { 
 							$scope.authToken = response.data.authToken;
 							$cookies.put("authToken",response.data.authToken);
@@ -383,8 +384,7 @@ app.controller('diveinappc', ["$scope", "$filter", "$http", "$cookies", function
 	// attempt to load the page contents.
 	// execute next if it works
 	$scope.loadEvent = function(eventKey, next) {
-		
-		$http.get('/api/v1/event/invite/'+eventKey).then(function(response) {
+		$http.get('https://sudoprod.dive-in.co/api/v1/event/invite/'+eventKey).then(function(response) {
 			if (response.status == 200) {
 				$scope.eventId = response.data.data.eventId;
 				$scope.event = response.data.data;
