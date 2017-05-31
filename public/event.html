@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" ng-app='diveinapp'>
 <head>
 	<title>DiveIn</title>
@@ -80,27 +80,25 @@ window.fbAsyncInit = function() {
 		<div class="modal-content">
 			<div class="modal-body">
 				<div id="login-form" class="container-fluid">
+					<p><img src="img/DiveIn-logo-color.png" width="144" height="87" alt=""/>
+				  </p>
 					<form class="form-signin" action="/api/v1/user/signup" method="POST">
-						<h2 class="form-signin-heading">Sign up</h2>
-						<label for="inputFirstName" class="sr-only">First name</label>
+  <label for="inputFirstName" class="sr-only">First name</label>
 						<input ng-model="inputFirstName" type="text" id="inputFirstName" class="form-control" placeholder="First name" required autofocus>
 						<label for="inputLastName" class="sr-only">Last name</label>
 						<input ng-model="inputLastName" type="text" id="inputLastName" class="form-control" placeholder="Last name" required>
 
 						<label for="inputDOB" class="sr-only">Date of birth</label>
-						<div class="input-group">
-							<input type="text" class="form-control" uib-datepicker-popup="longDate" ng-model="inputDOB" is-open="datePicker.opened" 
-								datepicker-options="dateOptions" ng-required="true" close-text="Close" placeholder="Date of birth" ng-focus="openDatePicker()"
-								ng-max="initDate"/>
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="openDatePicker()"><i class="glyphicon glyphicon-calendar"></i></button>
-							</span>	
+						<div class="input-group"> <span class="input-group-btn">
+						</span>	
 						</div>		
 
-						<label for="inputEmail" class="sr-only">Email address</label>
-						<input ng-model="inputEmail" type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
-						<label for="inputPassword" class="sr-only">Password</label>
-						<input ng-model="inputPassword" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+						<p>
+						  <label for="inputEmail" class="sr-only">Email address</label>
+						  <input ng-model="inputEmail" type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+						  <label for="inputPassword" class="sr-only">Password</label>
+						  <input ng-model="inputPassword" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+					  </p>
 						<button ng-click="register(inputFirstName,inputLastName,inputDOB,inputEmail,inputPassword)" type="button" class="btn btn-lg btn-primary btn-block">Register</button>
 						<a class="btn btn-block btn-social btn-facebook" ng-click="registerfb()">
 								<span class="fa fa-facebook"></span> Sign up  with Facebook
@@ -113,8 +111,34 @@ window.fbAsyncInit = function() {
 		</div>
 	</div>
 </div>
-<div class="container-fluid"  style="padding-left: 0px; padding-right: 0px;">
+<div class="container"  style="max-width:800px; padding-left: 0px; padding-right: 0px;">
 <!-- the events page -->
+<div class="container-fluid page-header" id="pageHeader">
+	<div class="row">
+	  <div class="col-xs-3">
+			<div class="pull-left">
+				<a href="http://dive-in.co"><img src="img/divein-logo.png" alt="DiveIn" style="float:top; width:100%; max-width:80pt;"></a>
+				<h5 class="bright-text text-center" style="margin-top:0px;">Be Active. Engage.</h5>
+			</div>
+		</div>		
+		<div class="col-xs-9" >
+			<div class="pull-right">
+				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#registerModal">SIGN UP</button>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-10 col-xs-offset-1">
+			<h1 class="bright-text text-center">{{event.eventName}}&nbsp;</h1>
+		</div>
+	</div>
+</div>
+
+<!--<div class="container-fluid" ng-show="errorMessage != ''">
+	<div class="well" ng-bind="errorMessage">
+	</div>
+</div>
+-->
 <div class="container-fluid" ng-show="registerAge">
 	<div class="well">
 		We're sorry, but you must be at least 18 years old to use DiveIn. For questions and concerns please visit <a href='http://www.dive-in.co'>www.dive-in.co</a> or contact us at <a href='mailto:support@dive-in.co'>support@dive-in.co</a>
@@ -125,81 +149,43 @@ window.fbAsyncInit = function() {
 		{{errorMessage}}
 	</div>	
 </div>
-<div class="container-fluid"  ng-show="event.eventId!=undefined" >
-	<div class="row">
-	<div class="row" style="height: auto; background-color: #EEEEEE;">
-		<div class="col-xs-12 col-sm-8 di-banner" id="pageHeader">
-			<div class="col-xs-3">
-				<div class="pull-left">
-					<img src="img/divein-logo.png" alt="DiveIn" style="float:top; width:100%; max-width:80pt;"/>
-					<h4 class="bright-text text-center" style="margin-top:0px;">DiveIn</h4>
-				</div>
-			</div>		
-			<div class="col-xs-9" >
-				<div class="pull-right">
-					<a href="http://dive-in.co"><span class="bright-text">HOME</span></a>
-					<button type="button" class="btn btn-default" data-toggle="modal" data-target="#registerModal">SIGN UP</button>
-				</div>
-			</div>
-			<div class="col-xs-10 col-xs-offset-1">
-				<h1 class="bright-text text-center">{{event.eventName}}&nbsp;</h1>
-			</div>
-		</div>
 
-		<div class="col-xs-12 col-sm-4 di-pad-sm-r di-hidden-xs">
-			<p class="summary-date">
-			{{event.eventDate | date:'MMM d' }}
-			</p>
-			<p class="summary-title">
-			{{event.eventTitle}}
-			</p>
-			<p class="summary-host">
-			by {{hostName}}
-			</p>
+<div class="container-fluid"  ng-show="event.eventId!=undefined" >
+	<div class="row di-pad" style="margin-left: 0px;">
+		<div class="pull-left">
 			<img id="hostThumbnail" src="img/head.png" class="face-image" style="float:top;"/>
-		</div>
-	</div>
-		<div class="col-xs-12 col-sm-4 di-hidden-sm di-pad-xs-r">
-			<img id="hostThumbnail" src="img/head.png" class="face-image" style="float:top;"/>
-			<span class="summary-host">
+			<span class="face-title">
 			by {{hostName}}
 			</span>
 		</div>
-		<div class="col-xs-12 di-hidden-xs" style="margin-top:10px;margin-bottom:5px;">
-			<div class="col-sm-4 pull-right">
-				<button id="changeButton" ng-click="attend()" ng-disabled="changeDisabled" type="button" 
-					ng-class="{'change-button btn btn-lg btn-danger':attending, 'change-button btn btn-lg btn-primary':!attending}">
-					{{changeText}}
-				</button>
-			</div>
-		</div>
-		<div id="messageBar" ng-message="messageIsOpen" class="alert-info" style="position:absolute;z-index:100;right:0%;bottom:0%;padding:2px;" role="alert">
-			{{message}}
-		</div>
 	</div>
-	<div class="row" style="border-top: 1px solid gray">
-		<div class="col-xs-12 col-sm-8 di-pad-xs-l di-pad-sm-l">
-			<p class="section-title">Description</p>
-			<p class="summary-title">{{event.eventTitle}}</p>
+	<div class="row di-pad" style="margin-left: 0px;">
+		<div class="pull-left">
 			<p class="description-text">{{event.eventDescription}}&nbsp;</p>
 		</div>
+	</div>
 
-		<div class="col-xs-12 col-sm-4 di-pad-xs-r di-pad-sm-r">
-			<p class="section-title">Date and Time</p>
+	<div class="row well di-pad" style="position:relative">
+		<div class="col-xs-12">
+			<p class="text-uppercase">Date and Time</p>
 			<p>{{event.eventDate | date:'EEEE, MMMM d, h:mm a' }}&mdash;{{event.eventToDate | date:'EEEE, MMMM d, h:mm a' }}</p>
-			<p class="section-title">Location</p>
+			<p class="text-uppercase">Location</p>
 			{{event.venueName}} 
 			<br>
 			{{event.address}}
 			<br>
+<!--			
+			<a ng-href="https://www.google.com/maps/preview?q={{event.venueLatitude}},{{event.venueLongitude}}&z=14&t=m&output=embed" target="_blank">Map</a>
+-->			
 		</div>
-		<div class="col-xs-12 di-hidden-sm" style="margin-top:10px;margin-bottom:5px;">
-			<div class="col-sm-4 pull-right">
-				<button id="changeButton" ng-click="attend()" ng-disabled="changeDisabled" type="button" 
-					ng-class="{'change-button btn btn-lg btn-danger':attending, 'change-button btn btn-lg btn-primary':!attending}">
-					{{changeText}}
-				</button>
-			</div>
+		<div class="col-xs-12 text-center" style="margin-top:10px;margin-bottom:5px;">
+			<button id="changeButton" ng-click="attend()" ng-disabled="changeDisabled" type="button" 
+				ng-class="{'change-button btn btn-lg btn-danger':attending, 'change-button btn btn-lg btn-primary':!attending}">
+				{{changeText}}
+			</button>
+		</div>
+		<div id="messageBar" ng-message="messageIsOpen" class="alert-info" style="position:absolute;z-index:100;right:0%;bottom:0%;padding:2px;" role="alert">
+			{{message}}
 		</div>
 	</div>
 </div>
@@ -207,18 +193,17 @@ window.fbAsyncInit = function() {
 <div class="container-fluid" ng-show="isMobile">
 Install our <a ng-href="{{event.deepLinkURL}}">mobile app</a>. 
 </div>
-<div class="container-fluid di-pad-xs-l di-pad-sm-l" style="border-top: 1px solid gray;" >
-	<div class="row" >
-		<div class="col-xs-12 col-sm-8">
-			<div class="pull-right" style="position: inline; padding-left: 0px; max-width: 100px;">
-				<img src="img/divein-mobile.png" class="img-responsive"/>
+<div class="container-fluid" >
+	<div class="row di-pad">
+<div class="col-xs-12">
+		  <div class="pull-right" style="position: inline; padding-left: 0px; max-width: 175px;">
+				<img src="img/featured_events.jpg" class="img-responsive"/>
 			</div>
-			<b style="margin-top: 0px">What is DiveIn?</b>
-			<p>
-			Finally. An app that actually gets you off your phone. From volunteering to hiking, DiveIn helps you plan and participate in all kinds 
-			of great activities. Invite your friends or meet new people who share your interests. 
+<h3>Time to do something</h3>
+		  <p>
+            See what is happening in your area. DiveIn lets you find passionate people and events that are positive and fun. Be a larger part of your community. Contribute and stay active. Invite your friends or meet new people who share your interests. 
 			Now live in the Bay Area.			
-			<p>
+		  <p>
 			Read our 
 			<a href="/terms.html">Terms of Service</a>
 			and our 
